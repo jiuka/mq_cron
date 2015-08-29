@@ -1,0 +1,14 @@
+#!/usr/bin/env ruby
+
+require 'bunny'
+
+connection = Bunny.new ARGV[0]
+connection.start
+
+channel = connection.create_channel
+
+exchange = channel.topic(ARGV[1], auto_delete: true)
+
+exchange.publish(ARGV[3], :routing_key => ARGV[2])
+
+connection.close

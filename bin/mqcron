@@ -1,3 +1,8 @@
 #!/usr/bin/env ruby
 
-require 'mq_cron'
+require 'mq_cron/cli'
+require 'mq_cron/daemon'
+
+cli = MqCron::Cli.new(ARGV)
+
+MqCron::Daemon.new(cli.options).run
