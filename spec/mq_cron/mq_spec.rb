@@ -91,6 +91,14 @@ RSpec.describe MqCron::Mq do
     end
   end
 
+  describe '.close' do
+    it 'closes the connection' do
+      expect(connection).to receive(:close)
+
+      subject.close
+    end
+  end
+
   describe '.queue_name' do
     it 'returns a unique queue name' do
       expect(subject.send(:queue_name)).to eq("mqcron-#{Socket.gethostname}-#{Process.pid}")

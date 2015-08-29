@@ -39,6 +39,10 @@ module MqCron
       queue.bind(exchange, :routing_key => routing_key)
     end
 
+    def close
+      connection.close
+    end
+
     private
 
     def queue_name
