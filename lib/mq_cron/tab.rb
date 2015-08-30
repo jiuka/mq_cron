@@ -1,15 +1,11 @@
 module MqCron
   class Tab
-
-    EVENTS=[:connect, :disconnect, :reconnect]
-
-    attr_reader :env, :event, :entry, :connection
+    attr_reader :env, :entry, :connection
 
     def initialize(crontab, options={})
       @crontab = crontab
       @options = options
       @env = {}
-      @event = {}
       @entry = {}
       @connection = {}
       if ENV['RABBITMQ_URL']
@@ -44,14 +40,6 @@ module MqCron
         else
           @env[m[:key].to_sym] = m[:value]
         end
-        return
-      end
-      line.match(/^@(?<event>\w+)\s+(?<cmd>.*)$/) do |m|
-        unless EVENTS.include?(m[:event].to_sym)
-          raise ArgumentError, "Unknown event @#{m[:event]}"
-        end
-        @event[m[:event].to_sym] ||= []
-        @event[m[:event].to_sym] << m[:cmd]
         return
       end
       line.match(/^(?<exchange>[\w\.]+)\s+(?<routingkey>[\w\.\#\*]+)\s+(?<cmd>.+)$/) do |m|

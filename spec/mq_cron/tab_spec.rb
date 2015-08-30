@@ -63,24 +63,6 @@ KEY2=VALUE2
       expect(ct.env).to include(:KEY2 => 'VALUE2')
     end
 
-    describe 'events' do
-      it 'should accept known event' do
-        ct = MqCron::Tab.new(<<-CRONTAB)
-@connect /bin/true
-        CRONTAB
-  
-        expect(ct.event).to include(:connect => ['/bin/true'])
-      end
-  
-      it 'should reject unknown events' do
-        expect {
-          MqCron::Tab.new(<<-CRONTAB)
-@unknown /bin/true
-          CRONTAB
-        }.to raise_exception(ArgumentError)
-      end
-    end
-  
     describe 'parse messages' do
       it 'should parse message lines' do
         ct = MqCron::Tab.new(<<-CRONTAB)
