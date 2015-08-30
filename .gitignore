@@ -12,3 +12,7 @@
 *.o
 *.a
 mkmf.log
+/man/*/*.1
+/man/*/*.5
+/man/*/*.html
+/man/*.*

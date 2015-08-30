@@ -4,7 +4,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'mq_cron/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "MqCron"
+  spec.name          = "mq_cron"
   spec.version       = MqCron::VERSION
   spec.authors       = ["Marius Rieder"]
   spec.email         = ["marius.rieder@durchmesser.ch"]
@@ -24,4 +24,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "bundler", "~> 1.7"
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "rspec"
+  spec.add_development_dependency 'md2man', '~> 4.0'
 end
