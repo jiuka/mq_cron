@@ -27,10 +27,18 @@ module MqCron
 
       logger.info "MqCron v#{MqCron::VERSION} starts up."
 
-      crontab.entry.each do |exchange, entry|
-        entry.each do |routing_key, command|
-          mq.bind(exchange, routing_key)
+      begin
+        crontab.entry.each do |exchange, entry|
+          entry.each do |routing_key, command|
+            mq.bind(exchange, routing_key)
+          end
         end
+      rescue Bunny::TCPConnectionFailed => e
+        @logger.fatal e.message
+        return
+      rescue Bunny::PossibleAuthenticationFailureError => e
+        @logger.fatal e.message
+        return
       end
 
       trap('SIGINT') { throw :end }
