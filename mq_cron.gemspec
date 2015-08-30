@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["marius.rieder@durchmesser.ch"]
   spec.summary       = %q{Message Queue Cron - Run commands ion response to messages}
   spec.description   = %q{Message Queue Cron - Run commands ion response to messages}
-  spec.homepage      = ""
+  spec.homepage      = "https://github.com/jiuka/mq_cron"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0")

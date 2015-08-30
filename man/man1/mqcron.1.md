@@ -2,7 +2,7 @@
 
 ## NAME
 
-mqcron - MessageQueue/RabbitmQ cron daemon
+mqcron - MessageQueue/RabbitMQ cron daemon
 
 ## SYNOPSIS
 
