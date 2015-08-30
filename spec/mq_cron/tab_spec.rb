@@ -4,23 +4,34 @@ require 'mq_cron/tab'
 RSpec.describe MqCron::Tab do
 
   describe 'parsing' do
-    describe 'rabbitmq url' do
-      it 'has a default url' do
-        ct = MqCron::Tab.new("")
-        expect(ct.url).to eq('amqp://localhost')
-      end
-
+    describe 'RABBITMQ_ parameters' do
       it 'honors RABBITMQ_URL' do
-        expect(ENV).to receive(:[]).with('RABBITMQ_URL').and_return('amqps://host')
+        allow(ENV).to receive(:[]).with('RABBITMQ_URL').and_return('amqps://host')
         ct = MqCron::Tab.new("")
-        expect(ct.url).to eq('amqps://host')
+        expect(ct.connection).to include(host: 'host', scheme: 'amqps')
       end
 
-      it 'sets it with RABBITMQ_URL' do
+      it 'parses RABBITMQ_URL' do
         ct = MqCron::Tab.new(<<-CRONTAB)
 RABBITMQ_URL=amqps://server
         CRONTAB
-        expect(ct.url).to eq('amqps://server')
+        expect(ct.connection).to include(host: 'server', scheme: 'amqps')
+      end
+
+      describe 'sets RABBITMQ_ parameters' do
+        it 'parses integers' do
+          ct = MqCron::Tab.new(<<-CRONTAB)
+RABBITMQ_HEARTBEAT=300
+          CRONTAB
+          expect(ct.connection).to include(heartbeat: 300)
+        end
+
+        it 'parses arrays' do
+          ct = MqCron::Tab.new(<<-CRONTAB)
+RABBITMQ_HOSTS=hosta hostb
+          CRONTAB
+          expect(ct.connection).to include(hosts: ['hosta', 'hostb'])
+        end
       end
     end
 

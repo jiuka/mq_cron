@@ -4,7 +4,7 @@ require 'mq_cron/mq'
 
 RSpec.describe MqCron::Mq do
 
-  let(:url) { 'amqp://guest:guest@localhost:5672' }
+  let(:settings) { {} }
   let(:callback) { Proc.new {|delivery_info, properties, payload| true } }
   let(:exchange) { 'exchange' }
   let(:routing_key) { 'routin.key.#' }
@@ -13,10 +13,10 @@ RSpec.describe MqCron::Mq do
   let(:connection) { 'Bunny::Connection' }
   let(:channel) { 'Bunny::Channel' }
   let(:queue) { 'Bunny::Queue' }
-  subject { described_class.new(url, callback) }
+  subject { described_class.new(settings, callback) }
 
   before(:each) do
-    allow(Bunny).to receive(:new).with(url).and_return(connection)
+    allow(Bunny).to receive(:new).with(settings).and_return(connection)
     allow(connection).to receive(:start).and_return(connection)
     allow(connection).to receive(:create_channel).and_return(channel)
     allow(connection).to receive(:exchange_exists?).and_return(true)
@@ -26,8 +26,8 @@ RSpec.describe MqCron::Mq do
   end
 
   describe '.initialize' do
-    it 'sets the url' do
-      expect(subject.url).to eq(url)
+    it 'sets the settings' do
+      expect(subject.settings).to eq(settings)
     end
 
     it 'setup the callback' do
@@ -37,12 +37,12 @@ RSpec.describe MqCron::Mq do
 
   describe '.connection' do
     it 'connects to bunny' do
-      expect(Bunny).to receive(:new).with(url).and_return(connection)
+      expect(Bunny).to receive(:new).with(settings).and_return(connection)
       subject.connection
     end
 
     it 'reuse the connection' do
-      expect(Bunny).to receive(:new).with(url).and_return(connection)
+      expect(Bunny).to receive(:new).with(settings).and_return(connection)
       subject.connection
       subject.connection
     end

@@ -4,16 +4,16 @@ require 'mq_cron/logger'
 
 module MqCron
   class Mq
-    attr_reader :url, :callback
+    attr_reader :settings, :callback
 
-    def initialize(url, callback)
-      @url = url
+    def initialize(settings, callback)
+      @settings = settings
       @callback = callback
       @logger = MqCron::Logger.instance
     end
 
     def connection
-      @connection ||= Bunny.new(@url).start
+      @connection ||= Bunny.new(@settings).start
     end
 
     def channel

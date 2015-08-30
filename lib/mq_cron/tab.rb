@@ -3,7 +3,7 @@ module MqCron
 
     EVENTS=[:connect, :disconnect, :reconnect]
 
-    attr_reader :env, :event, :entry, :url
+    attr_reader :env, :event, :entry, :connection
 
     def initialize(crontab, options={})
       @crontab = crontab
@@ -11,7 +11,10 @@ module MqCron
       @env = {}
       @event = {}
       @entry = {}
-      @url = ENV['RABBITMQ_URL'] || 'amqp://localhost'
+      @connection = {}
+      if ENV['RABBITMQ_URL']
+        @connection.merge! Bunny::Session.parse_uri(ENV['RABBITMQ_URL'])
+      end
 
       parse
     end
@@ -25,8 +28,19 @@ module MqCron
         return
       end
       line.match(/^(?<key>\w+)=(?<q>['"]?)(?<value>.*)\k<q>$/) do |m|
-        if m[:key] == 'RABBITMQ_URL'
-          @url = m[:value]
+        if m[:key].start_with?('RABBITMQ_')
+          if m[:key] == 'RABBITMQ_URL'
+            @connection.merge! Bunny::Session.parse_uri(m[:value])
+          else
+            key = m[:key][9..-1].downcase.to_sym
+            if /\A\d+\z/.match(m[:value])
+              @connection[key] = m[:value].to_i
+            elsif m[:value].include?(' ')
+              @connection[key] = m[:value].split(' ')
+            else
+              @connection[key]= m[:value]
+            end
+          end
         else
           @env[m[:key].to_sym] = m[:value]
         end

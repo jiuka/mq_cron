@@ -57,7 +57,7 @@ module MqCron
     end
 
     def mq
-      @mq ||= MqCron::Mq.new crontab.url, method(:receive)
+      @mq ||= MqCron::Mq.new crontab.connection, method(:receive)
     end
 
     def crontab
